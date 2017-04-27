@@ -10,9 +10,9 @@ import (
 
 	"github.com/UnwrittenFun/ns/config"
 	"github.com/UnwrittenFun/ns/util"
-	"github.com/dixonwille/wlog"
 	"github.com/dixonwille/wmenu"
 	homedir "github.com/mitchellh/go-homedir"
+	wlog "gopkg.in/dixonwille/wlog.v2"
 )
 
 var cui *wlog.ColorUI
@@ -73,24 +73,24 @@ func main() {
 		npmrcs = append(npmrcs, name)
 	}
 
-	setupMenuAndRun(cfg.GetString("user", npmrcs[0]), npmrcs, func(opt wmenu.Opt) error {
-		npmrcPath := filepath.Join(nsHome, opt.Text+".npmrc")
+	setupMenuAndRun(cfg.GetString("user", npmrcs[0]), npmrcs, func(opt []wmenu.Opt) error {
+		npmrcPath := filepath.Join(nsHome, opt[0].Text+".npmrc")
 		if err := util.CopyFile(filepath.Join(homedir, ".npmrc"), npmrcPath, os.ModePerm); err != nil {
 			return err
 		}
 
-		cfg.Set("user", opt.Text)
+		cfg.Set("user", opt[0].Text)
 		if err := cfg.Save(); err != nil {
 			return err
 		}
 
 		fmt.Println()
-		cui.Success("Switched to user " + opt.Text)
+		cui.Success("Switched to user " + opt[0].Text)
 		return nil
 	})
 }
 
-func setupMenuAndRun(current string, options []string, handler func(opt wmenu.Opt) error) {
+func setupMenuAndRun(current string, options []string, handler func(opt []wmenu.Opt) error) {
 	menu := wmenu.NewMenu("Switch account to:")
 	menu.ClearOnMenuRun()
 	menu.LoopOnInvalid()

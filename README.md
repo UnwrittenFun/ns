@@ -2,7 +2,7 @@
 
 ## Install
 ```sh
-go install github.com/UnwrittenFun/ns
+go get github.com/UnwrittenFun/ns
 ```
 
 ## Usage
